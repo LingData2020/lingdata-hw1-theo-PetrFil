@@ -27,6 +27,10 @@ a. What is the proportion of values in the sample that exceed $5$? Explain your 
 b. Indicate the interval where the median of this sample can lie. Explain your answer.
 c. How the histogram will change if we add an element $7$ to the sample? Explain your answer.
 
+a. 1/4 (number of values exceeding 5 - 5, total number of values - 20)
+b. It can lie somewhere between -5 and 0. Total number of values is 20. The median is supposed to be represented by the 10th and the 11th values. Both of them lie in the second column between -5 and 0 (the 1st value lies in the 1st column, the 2nd-11th values are in the second one)
+c. The 4th column between 5 and 10 will be increased by one point
+
 ### Problem 2
 
 a. Look at the histograms of two samples. They illustrate the distribution of normalized average reaction time to frequent words (in ms) in two groups of people.
@@ -44,7 +48,10 @@ hist(sample2, col="lightgreen", xlim=c(100, 900))
 
 Which of the samples has a larger variance? Explain your answer.
 
+a. Sample 1 has larger variance. Its fequency lies between 0 and 40. Its reaction time is wider. In sample 1 almost half values lie in the 3rd column while other values are distributed more evenly than in sample 2. More than 66% of values in sample 2 are represented by 2 adjacent columns with almost the same word frequency.
+
 \newpage
+
 
 b. Look at the histograms of two samples.
 
@@ -58,6 +65,8 @@ hist(sample2, col="lightgreen", xlim=c(5, 15))
 ```
 
 Which of the samples has a larger variance? Explain your answer.
+
+b. Sample 2 has larger variance. Sample 1 has both positive and negative numbers. Its highest column is very close to 0. Both of these facts reduce expected value and dispersion. Sample 2 is distributed in the interval between 8 and 12 (no zeros or negative numbers). 
 
 ## Part 2
 
@@ -76,35 +85,37 @@ hist(mistakes, breaks=60, col= "deepskyblue", ylim=c(0, 40))
 ### 3.1
 Is it true that $50$% students made more than $35$ mistakes?
 ```
-
+No
 ```
 Explain your answer below:
-
+It looks like more than 50% students made less than 30 mistakes (not even 35). The number of students who made 35 mistakes is much less.
 
 ### 3.2
 Is it true that most students made no more than $10$ mistakes?
 ```
-
+No
 ```
 Explain your answer below:
 
+There are much more high columns to the right from the point 10. Most students made more than 10 mistakes. 
 
 ### 3.3
 Which of the following values is closer to be the median of `mistakes`: $10$, $20$, $30$, $40$?
 ```
-
+20
 ```
 Explain your answer below:
-
+5 columns to the left and to the right from the point 20 have the highest values. I had some doubts regarding point 30 as there is a wide distribution of low columns to the right. If we neglect outliers to the right from 60, the distribution will be somewhere between 0 and 60, and if it were normal the answer would be 30. 
+ 
 
 ### Problem 4. Exact binomial test
 
 The null hypothesis is that $p=0$ (i.e. no success is possible). In a dataset, there is only one success out of 1 000 000 observations. Will you reject the null hypothesis? 
 ```
-
+Yes
 ```
 Explain your answer below:
-
+p-value =((1/2)**1000000)*1000000, it is very small(<0.05). So, I will reject the null hypothesis.
 
 ## Part 3
 
@@ -119,19 +130,20 @@ $44$, $50$, $42$, $64$, $66$, $42$, $72$, $56$, $72$, $54$, $46$, $48$, $48$, $5
 ### 5.1
 Arrange them in a vector and call it `age`. 
 ```{r}
-
+age <- c(44, 50, 42, 64, 66, 42, 72, 56, 72, 54, 46, 48, 48, 52, 50, 66, 84)
 ```
 
 ### 5.2
 Examine the type of `age` variable (numeric, character, etc).
 ```
-
+class(age) 
+#numeric
 ```
 
 ### 5.3
 Plot the histogram of the vector `age` with $5$ bins. Change its color to any you want. (Use either R basic or ggplot2 style for plotting.)
 ```{r}
-
+hist(age, breaks = 5, col="yellow", main="")
 ```
 
 
@@ -143,13 +155,16 @@ Here is a series of words:
 ### 6.1
 Arrange elements above in a vector and call it `words` 
 ```{r}
-
+words <- c("pie", "bar", "bar", "pie", "pie", "bar", "bar", "char")
 ```
 
 ### 6.2
 Calculate the relative frequences of values in `words` measured in percent.
 ```{r}
-
+rel_freq <- table(words)/length(words)*100
+rel_freq
+#bar char  pie 
+#50.0 12.5 37.5 
 ```
 
 ## Problem 7. Position of verbs in verses
@@ -172,28 +187,34 @@ Let's assume that the probability for verbs to be used in any position ('in gene
 
 What is your null hypothesis $H_0$ and what is the alternative hypothesis $H_1$?
 ```
-H0: 
-H1: 
+H0: p(UPoS=v) = 0.17
+H1: p(UPoS=v) != 0.17
 ```
 
 ### 7.2
 
 Read the dataset [“The last words in verses”](https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/poetry_last_in_lines.csv). Filter out the relevant observations from 1920s, calculate the number of verbs observed in the sample, and the sample size. 
 ```{r}
+poetry <- read_tsv("https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/poetry_last_in_lines.csv")
+poetry1920 <- poetry[poetry$Decade == "1920s"]
+verbs <- poetry1920[poetry1920$UPoS == "VERB",]
+verbs_num <- nrow(verbs)
+sample_size <- nrow(poetry1920)
+### 7.3
+```
+Use an exact binomial test to calculate p-value. 
+
 
 ```
-
-### 7.3
-
-Use an exact binomial test to calculate p-value. 
-```{r}
-
+binom.test (verbs_num, sample_size, 0.17)
+#p-value = 0.2297, probability of success 0.1407942 
 ```
 
 ### 7.4 Interpret results
 
 Give your interpretation of obtained p-value. Answer the initial question: Can we decide that in verses written in 1920s, verbs are used in the rhyming posision more often or less often than expected?
 ```
+We do not reject the null hypothesis because P-value= 0.2297 > 0.05. In this particular dataset verbs are used in the rhyming position less often than expected (probability of success 0.1407942 ) but this number of experiments is not enough. To reject the null hypothesis the probability of succes should be less (or much more) or dataset should be bigger (if it were 3 times bigger with the same probability of success, p-value would be equal too 0.02367 and we could reject the null hypothesis)
 
 ```
 
@@ -201,12 +222,18 @@ Give your interpretation of obtained p-value. Answer the initial question: Can w
 *(A bonus problem, extra points in evaluation)*.
 Repeat 2.3 for verses written in the 1820s.
 ```{r}
-
+poetry1820 <- poetry[poetry$Decade == "1820s",]
+verbs18 <- poetry1820[poetry1820$UPoS == "VERB",]
+verbs_num18 <- nrow(verbs18)
+sample_size18 <- nrow(poetry1820)
+binom.test (verbs_num18, sample_size18, 0.17)
 ```
 
 Write down your general conlusions about data provided for both 1920s and 1820s data.
 ```
 
+The second dataset was even worse as it has only 87 lines and p-value = 0.8873 > 0.05 . The probability of success is almost equal to the null hypothesis (0.1724138). 
+We can conclude, that the null hypothesis cannot been rejected in both cases (especially in 1820s). Both datasets should be wider to make us more confident. 
 ```
 
 ### Problem 8. One-sample t-test
@@ -219,19 +246,22 @@ t.test(sample, mu = 7725) # mu is a population mean
 ### 8.1
 Write down a two-tailed alternative hypothesis.
 ```
-H1: 
+H1: mean(shg05)!=73
 ```
 
 ### 8.2
 Perform a one-sample t-test. 
 ```{r}
-
+icelandic <- read_csv("https://raw.githubusercontent.com/LingData2019/LingData2020/master/data/icelandic.csv")
+shg05 <- icelandic[icelandic$speaker == "shg05",]
+shg05_vowels <- shg05$vowel.dur
+t.test(shg05_vowels, mu = 73)
 ```
 
 ### 8.3
 Interpret results. 
 ```
-
+ p-value = 0.05172 > 0.05 (but it is very close to 0.05). Technically, we still have to accept the null hypothesis and reject H1. In this particular case I would ask the speaker to make more voice records if it is possible. Probably, another dataset of records would lead to different results.
 ```
 
 #### Supplementary reading
